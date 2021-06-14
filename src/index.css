@@ -1,0 +1,11 @@
+/*normalize*/
+@import url(./vendor/normalize.css);
+
+/*fonts*/
+@import url(./vendor/fonts/fonts.css);
+
+.body {
+  font-family: 'Inter', 'Arial', 'Helvetica', sans-serif;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}

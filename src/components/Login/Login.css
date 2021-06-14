@@ -1,0 +1,30 @@
+.login {
+  width: 396px;
+  padding: 70px 0;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.login__bnt {
+  margin-top: 197px;
+}
+
+
+@media screen and (max-width: 768px) {
+  .login {
+    padding: 232px 0;
+  }
+}
+
+@media screen and (max-width: 425px) {
+  .login {
+    width: calc(100% - 60px);
+    padding: 232px 0;
+    padding: 56px 0 30px;
+  }
+
+  .login__bnt {
+    margin-top: 309px;
+  }
+}
