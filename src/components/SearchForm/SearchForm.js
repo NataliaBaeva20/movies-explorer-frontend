@@ -3,8 +3,8 @@ import './SearchForm.css';
 function SearchForm() {
   return (
     <section className="search page__section">
-      <form className="search__form">
-        <input className="search__input" placeholder="Фильм" />
+      <form className="search__form" name="search" noValidate>
+        <input className="search__input" placeholder="Фильм" required/>
         <button className="search__button"></button>
       </form>
 
