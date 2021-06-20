@@ -15,6 +15,25 @@ import imageFourteen from '../images/card-image/pic-14.png';
 import imageFifteen from '../images/card-image/pic-15.png';
 import imageSixteen from '../images/card-image/pic-16.png';
 
+
+export const numberCardsOnPage = {
+  laptopScreen: {
+    width: 1280,
+    initialCards: 12,
+    addCards: 4
+  },
+  tabletScreen: {
+    width: 768,
+    initialCards: 8,
+    addCards: 2
+  },
+  mobileScreen: {
+    width: 320,
+    initialCards: 5,
+    addCards: 1
+  }
+}
+
 export const userData = {
   name: 'Виталий',
   email: 'pochta@yandex.ru'

@@ -33,6 +33,8 @@
 
 .movies__button_invisible {
   visibility: hidden;
+  padding: 0;
+  line-height: 10px;
 }
 
 @media screen and (max-width: 768px) {

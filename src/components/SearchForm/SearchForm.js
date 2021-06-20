@@ -1,10 +1,29 @@
+import React from 'react';
 import './SearchForm.css';
 
-function SearchForm() {
+function SearchForm({onSubmit}) {
+  const [search, setSearch] = React.useState('');
+
+  function handleChange(e) {
+    setSearch(e.target.value);
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    // onSubmit(search);
+
+
+    if(search.length === 0) {
+      console.log('Нужно ввести ключевое слово');
+    } else {
+      onSubmit(search);
+    }
+  }
+
   return (
     <section className="search page__section">
-      <form className="search__form" name="search" noValidate>
-        <input className="search__input" placeholder="Фильм" required/>
+      <form className="search__form" name="search" noValidate onSubmit={handleSubmit}>
+        <input value={search} onChange={handleChange} type="text" name="searchInput" className="search__input" placeholder="Фильм" required/>
         <button className="search__button"></button>
       </form>
 
