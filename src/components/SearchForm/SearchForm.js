@@ -10,8 +10,6 @@ function SearchForm({onSubmit}) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    // onSubmit(search);
-
 
     if(search.length === 0) {
       console.log('Нужно ввести ключевое слово');

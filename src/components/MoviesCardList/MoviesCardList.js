@@ -4,7 +4,7 @@ import './MoviesCardList.css';
 import MoviesCard from '../MoviesCard/MoviesCard';
 import { numberCardsOnPage } from '../../utils/constants'
 
-function MoviesCardList({movies, saved}) {
+function MoviesCardList({movies, saved, errorServer}) {
   const [screenWidth, setScreenWidth] = React.useState(0);
   const [numberInitialCards, setNumberInitialCards] = React.useState(0);
   const [numberAddCards, setNumberAddCards] = React.useState(0);
@@ -37,7 +37,6 @@ function MoviesCardList({movies, saved}) {
   }, [screenWidth]);
 
   const newList = movies.slice(0, numberInitialCards);
-  // console.log(newList);
 
   function addMoreCards() {
     setNumberInitialCards(numberCards => {
@@ -45,12 +44,11 @@ function MoviesCardList({movies, saved}) {
     });
   }
 
-  // console.log(movies.length);
-  // console.log(`newList ${newList.length}`);
-
-
   return (
     <section className="movies page__section">
+      <p className={`movies__not-found ${movies.length !== 0 && 'movies__not-found_invisible'}`}>Ничего не найдено</p>
+      <p className={`movies__not-found ${!errorServer && 'movies__not-found_invisible'}`}>Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз.</p>
+
       <div className="movies__list">
         {
           newList.map(item => (

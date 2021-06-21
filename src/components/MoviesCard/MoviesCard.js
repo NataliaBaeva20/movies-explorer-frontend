@@ -24,7 +24,8 @@ function MoviesCard({movie, saved}) {
   function setTimeFormat(mins) {
     const hours = Math.trunc(mins / 60);
     const minutes = mins % 60;
-    return `${hours}ч ${minutes}м`;
+
+    return `${hours === 0 ? '' : `${hours}ч` } ${minutes}м`;
   }
 
   return (

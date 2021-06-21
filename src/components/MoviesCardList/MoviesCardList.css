@@ -4,6 +4,19 @@
   align-items: center;
 }
 
+.movies__not-found {
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 19px;
+  margin: 100px 0 50px;
+  text-align: center;
+  padding: 0 200px;
+}
+
+.movies__not-found_invisible {
+  display: none;
+}
+
 .movies__list {
   width: 100%;
   display: grid;

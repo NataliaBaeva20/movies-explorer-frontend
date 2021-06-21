@@ -13,26 +13,42 @@ import Profile from '../Profile/Profile';
 
 function App() {
   const [loggedIn, setLoggedIn] = React.useState(true);
-  const [moviesList, setMoviesList] = React.useState([]);
+  const [apiMoviesList, setApiMoviesList] = React.useState([]);
   const [movies, setMovies] = React.useState([]);
+  const [isActive, setIsActive] = React.useState(false);
+  const [errorServer, setErrorServer] = React.useState(false);
 
   React.useEffect(() => {
     getInitialMovies()
     .then((data) => {
-      setMoviesList(data);
+      setApiMoviesList(data);
+    })
+    .catch(err => {
+      setErrorServer(true)
+      console.log(err);
     });
   }, []);
 
   function searchMovies(word) {
-    const listFindMovies = moviesList.filter((item) => {
+    setIsActive(!isActive);
+    const listFindMovies = apiMoviesList.filter((item) => {
       return item.nameRU.toLowerCase().includes(word);
     });
 
-    setMovies(listFindMovies)
+    if (listFindMovies.length !== 0) {
+      setIsActive(false);
+      localStorage.setItem('movies', JSON.stringify(listFindMovies));
+      setMovies(JSON.parse(localStorage.getItem('movies')));
+    } else {
+      setIsActive(false);
+      setMovies([]);
+
+    }
   }
 
-
-  // console.log(movies);
+  React.useEffect(() => {
+    setMovies(JSON.parse(localStorage.getItem('movies')));
+  }, []);
 
   return (
     <div className="page">
@@ -41,7 +57,7 @@ function App() {
           <Main loggedIn={loggedIn} />
         </Route>
         <Route path="/movies">
-          <Movies movies={movies} loggedIn={loggedIn} onSubmitSearchForm={searchMovies} />
+          <Movies movies={movies} loggedIn={loggedIn} onSubmitSearchForm={searchMovies} isActive={isActive} errorServer={errorServer} />
         </Route>
         <Route path="/saved-movies">
           <SavedMovies loggedIn={loggedIn} />
