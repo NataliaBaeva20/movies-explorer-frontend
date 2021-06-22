@@ -13,7 +13,7 @@ import PageNotFound from '../PageNotFound/PageNotFound';
 import Profile from '../Profile/Profile';
 
 function App() {
-  const [loggedIn, setLoggedIn] = React.useState(true);
+  const [loggedIn, setLoggedIn] = React.useState(false);
   const [apiMoviesList, setApiMoviesList] = React.useState([]);
   const [movies, setMovies] = React.useState([]);
   const [savedMovies, setSavedMovies] = React.useState([]);
@@ -26,18 +26,18 @@ function App() {
     getInitialMovies()
     .then((data) => {
       setApiMoviesList(data);
-      console.log(data)
+      // console.log(data)
     })
     .catch(err => {
       setErrorServer(true);
-      console.log(err);
+      // console.log(err);
     });
 
     mainApi.getMyMovies(token)
       .then(data => {
         setSavedMovies(data);
         localStorage.setItem('savedMovies', JSON.stringify(data));
-        console.log(data);
+        // console.log(data);
       });
   }, []);
 
@@ -90,9 +90,13 @@ function App() {
       })
   }
 
+  function handelRegisterUser() {
+
+  }
+
   React.useEffect(() => {
     setMovies(JSON.parse(localStorage.getItem('movies')));
-    console.log(JSON.parse(localStorage.getItem('movies')))
+    // console.log(JSON.parse(localStorage.getItem('movies')));
   }, []);
 
   return (
@@ -110,7 +114,7 @@ function App() {
         <Route path="/profile">
           <Profile loggedIn={loggedIn} />
         </Route>
-        <Route path="/signup">
+        <Route path="/signup" onRegister={handelRegisterUser}>
           <Register />
         </Route>
         <Route path="/signin">

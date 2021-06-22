@@ -74,6 +74,13 @@
   cursor: pointer;
 }
 
+.form__btn:disabled {
+  background: #F8F8F8;
+  color: #C2C2C2;
+  cursor: default;
+  opacity: 1;
+}
+
 .auth__subtitle {
   font-weight: 400;
   font-size: 14px;

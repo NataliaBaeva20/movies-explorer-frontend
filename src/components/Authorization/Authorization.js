@@ -1,6 +1,5 @@
 import './Authorization.css';
 
-
 function Authorization(props) {
   return (
     <div className="auth">
