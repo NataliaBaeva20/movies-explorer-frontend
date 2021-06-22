@@ -4,7 +4,7 @@ import './MoviesCardList.css';
 import MoviesCard from '../MoviesCard/MoviesCard';
 import { numberCardsOnPage } from '../../utils/constants'
 
-function MoviesCardList({movies, saved, errorServer}) {
+function MoviesCardList({movies, saved, errorServer, onMovieSave, onMovieDelete}) {
   const [screenWidth, setScreenWidth] = React.useState(0);
   const [numberInitialCards, setNumberInitialCards] = React.useState(0);
   const [numberAddCards, setNumberAddCards] = React.useState(0);
@@ -53,9 +53,11 @@ function MoviesCardList({movies, saved, errorServer}) {
         {
           newList.map(item => (
             <MoviesCard
-                key={item.id}
+                key={saved ? item._id : item.id}
                 movie={item}
                 saved={saved}
+                onMovieSave={onMovieSave}
+                onMovieDelete={onMovieDelete}
               />
             )
           )

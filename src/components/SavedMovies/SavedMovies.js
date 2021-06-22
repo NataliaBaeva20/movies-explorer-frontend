@@ -5,14 +5,12 @@ import Footer from '../Footer/Footer';
 import SearchForm from '../SearchForm/SearchForm';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
 
-import { initialSavedMovies } from '../../utils/constants';
-
-function SavedMovies(props) {
+function SavedMovies({movies, loggedIn, onMovieDelete}) {
   return (
     <>
-      <Header loggedIn={props.loggedIn} />
+      <Header loggedIn={loggedIn} />
       <SearchForm />
-      <MoviesCardList movies={initialSavedMovies} saved={true} />
+      <MoviesCardList movies={movies} saved={true} onMovieDelete={onMovieDelete} />
       <Footer />
     </>
   );
