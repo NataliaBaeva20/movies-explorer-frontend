@@ -1,8 +1,10 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
-import './App.css';
+import { Route, Switch, useHistory } from 'react-router-dom';
+import { CurrentUserContext } from '../../contexts/CurrentUserContext'
 import { getInitialMovies } from '../../utils/MoviesApi';
 import mainApi from '../../utils/MainApi';
+import * as auth from '../../utils/auth';
+import './App.css';
 
 import Main from '../Main/Main';
 import Movies from '../Movies/Movies';
@@ -11,16 +13,18 @@ import Register from '../Register/Register';
 import Login from '../Login/Login';
 import PageNotFound from '../PageNotFound/PageNotFound';
 import Profile from '../Profile/Profile';
+import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 
 function App() {
   const [loggedIn, setLoggedIn] = React.useState(false);
+  const [currentUser, setCurrentUser] = React.useState({name: 'Имя', email: 'pochta@yandex.ru'});
   const [apiMoviesList, setApiMoviesList] = React.useState([]);
   const [movies, setMovies] = React.useState([]);
   const [savedMovies, setSavedMovies] = React.useState([]);
   const [isActive, setIsActive] = React.useState(false);
   const [errorServer, setErrorServer] = React.useState(false);
-
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGI4ZTYxNmEzOTFjMzIyOThhZjg2ODIiLCJpYXQiOjE2MjQzMDI5NTYsImV4cCI6MTYyNDkwNzc1Nn0.E8XkBDEVAgasBilZMdRsCMc-0s3XSOnhLv-qJaC5oa4';
+  const [token, setToken] = React.useState('');
+  const history = useHistory();
 
   React.useEffect(() => {
     getInitialMovies()
@@ -32,13 +36,6 @@ function App() {
       setErrorServer(true);
       // console.log(err);
     });
-
-    mainApi.getMyMovies(token)
-      .then(data => {
-        setSavedMovies(data);
-        localStorage.setItem('savedMovies', JSON.stringify(data));
-        // console.log(data);
-      });
   }, []);
 
   function searchMovies(word) {
@@ -90,9 +87,62 @@ function App() {
       })
   }
 
-  function handelRegisterUser() {
-
+  function handleLogin(email, password) {
+    auth.authorize(email, password)
+      .then(data => {
+        if(data.token) {
+          setLoggedIn(true);
+          setToken(localStorage.getItem('jwt'));
+          history.push('/movies');
+        }
+      })
   }
+
+  function handelRegisterUser(name, email, password) {
+    console.log('регистрация');
+    auth.register(name, email, password)
+      .then(data => {
+        handleLogin(email, password);
+      });
+  }
+
+  function handleSignOut() {
+    setLoggedIn(false);
+    localStorage.removeItem('jwt');
+    history.push('/signin');
+  }
+
+  function tokenCheck() {
+    if (localStorage.getItem('jwt')) {
+      const jwt = localStorage.getItem('jwt');
+      if (jwt) {
+        auth.getContent(jwt).then((res) => {
+          if (res) {
+            setCurrentUser({ name: res.name, email: res.email });
+            setLoggedIn(true);
+            setToken(localStorage.getItem('jwt'));
+            history.push('/movies');
+          }
+        }).catch((err) => {
+          console.log(err);
+        });
+      }
+    }
+  }
+
+  React.useEffect(() => {
+    tokenCheck();
+  }, []);
+
+  React.useEffect(() => {
+    if(loggedIn) {
+      mainApi.getMyMovies(localStorage.getItem('jwt'))
+        .then(data => {
+          setSavedMovies(data);
+          localStorage.setItem('savedMovies', JSON.stringify(data));
+        });
+    }
+  }, [loggedIn]);
 
   React.useEffect(() => {
     setMovies(JSON.parse(localStorage.getItem('movies')));
@@ -100,31 +150,48 @@ function App() {
   }, []);
 
   return (
+    <CurrentUserContext.Provider value={currentUser} >
     <div className="page">
       <Switch>
         <Route exact path="/">
           <Main loggedIn={loggedIn} />
         </Route>
-        <Route path="/movies">
-          <Movies movies={movies} loggedIn={loggedIn} onSubmitSearchForm={searchMovies} isActive={isActive} errorServer={errorServer} onMovieSave={handleMovieSave} onMovieDelete={handleMovieDelete} />
-        </Route>
-        <Route path="/saved-movies">
-          <SavedMovies movies={savedMovies} loggedIn={loggedIn} onMovieDelete={handleMovieDelete} />
-        </Route>
-        <Route path="/profile">
-          <Profile loggedIn={loggedIn} />
-        </Route>
-        <Route path="/signup" onRegister={handelRegisterUser}>
-          <Register />
+        <ProtectedRoute
+          exact path="/movies"
+          component={Movies}
+          loggedIn={loggedIn}
+          movies={movies}
+          isActive={isActive}
+          errorServer={errorServer}
+          onSubmitSearchForm={searchMovies}
+          onMovieSave={handleMovieSave}
+          onMovieDelete={handleMovieDelete}
+        />
+        <ProtectedRoute
+          exact path="/saved-movies"
+          component={SavedMovies}
+          movies={savedMovies}
+          loggedIn={loggedIn}
+          onMovieDelete={handleMovieDelete}
+        />
+        <ProtectedRoute
+          exact path="/profile"
+          loggedIn={loggedIn}
+          component={Profile}
+          onSignOut={handleSignOut}
+        />
+        <Route path="/signup">
+          <Register onRegister={handelRegisterUser} />
         </Route>
         <Route path="/signin">
-          <Login />
+          <Login onLogin={handleLogin} />
         </Route>
         <Route path="*">
           <PageNotFound />
         </Route>
       </Switch>
     </div>
+    </CurrentUserContext.Provider>
   );
 }
 

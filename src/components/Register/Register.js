@@ -6,14 +6,22 @@ import Logo from '../Logo/Logo';
 import Authorization from '../Authorization/Authorization';
 import { useFormWithValidation } from '../../hooks/useFormWithValidation';
 
-function Register() {
+function Register({ onRegister }) {
   const {values, handleChange, errors, isValid, resetForm} = useFormWithValidation();
+
+  function handleSubmit(e) {
+    const { name, email, password } = values;
+
+    e.preventDefault();
+    onRegister(name, email, password);
+    resetForm();
+  }
 
   return (
     <section className="register">
       <Logo />
 
-      <Authorization title="Добро пожаловать!" name="register">
+      <Authorization title="Добро пожаловать!" name="register" onSubmit={handleSubmit}>
         <p className="form__input-text">Имя</p>
           <input value={values.name} onChange={handleChange} type="text" name="name" className="form__input" required minLength="2" maxLength="30" pattern="[a-zA-Zа-яА-ЯёЁ\- ]{1,}" />
           <span className="form__error">{errors.name}</span>

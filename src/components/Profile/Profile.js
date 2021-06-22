@@ -1,18 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import './Profile.css';
 
 import Header from '../Header/Header';
-import { userData } from '../../utils/constants';
 
-function Profile(props) {
-
+function Profile({ loggedIn, onSignOut }) {
+  const currentUser = React.useContext(CurrentUserContext);
   const [name, setName] = React.useState('');
   const [email, setEmail] = React.useState('');
 
   React.useEffect(() => {
-    setName(userData.name);
-    setEmail(userData.email);
+    setName(currentUser.name);
+    setEmail(currentUser.email);
   }, []);
 
   function handleChange(e) {
@@ -21,9 +21,9 @@ function Profile(props) {
 
   return (
     <>
-      <Header loggedIn={props.loggedIn} />
+      <Header loggedIn={loggedIn} />
       <section className="profile">
-        <h2 className="profile__title">Привет, {userData.name}!</h2>
+        <h2 className="profile__title">Привет, {currentUser.name}!</h2>
         <form className="profile__form" name="profile" noValidate>
           <label className="profile__label">Имя
             <input value={name} onChange={handleChange} type="text" name="name" className="profile__input" required minLength="2" maxLength="30" />
@@ -33,7 +33,7 @@ function Profile(props) {
           </label>
           <button type="submit" className="profile__button">Редактировать</button>
         </form>
-        <Link to="/signin" className="profile__link">Выйти из аккаунта</Link>
+        <Link to="/signin" className="profile__link" onClick={onSignOut} >Выйти из аккаунта</Link>
       </section>
     </>
   );

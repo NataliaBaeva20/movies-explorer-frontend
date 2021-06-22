@@ -73,24 +73,6 @@ export class MainApi {
       .then(this._checkResponse);
   }
 
-  // changeLikeCardStatus(id, isLiked, token) {
-  //   return fetch(`${this._url}/cards/${id}/likes`, {
-  //     method: `${isLiked ? 'PUT' : 'DELETE'}`,
-  //     headers: { ...this._headers, Authorization: `Bearer ${token}` },
-  //   })
-  //     .then(this._checkResponse);
-  // }
-
-  // getUserInfo(token) {
-  //    return fetch(`${this._url}/users/me`, {
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'Authorization': `Bearer ${token}`
-  //     }
-  //   })
-  //     .then(this._checkResponse);
-  // }
-
   // setUserInfo({name, about}, token) {
   //   return fetch(`${this._url}/users/me`, {
   //     method: 'PATCH',
