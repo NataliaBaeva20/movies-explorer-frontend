@@ -60,7 +60,6 @@
   color: #fff;
   border: none;
   border-radius: 3px;
-  margin-top: 134px;
   transition: opacity .3s ease-in;
   padding: 0;
   outline: none;
@@ -105,9 +104,5 @@
 @media screen and (max-width: 425px) {
   .auth__title {
     margin: 50px 0 80px;
-  }
-
-  .form__btn {
-    margin-top: 222px;
   }
 }

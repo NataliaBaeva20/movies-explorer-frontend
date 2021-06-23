@@ -6,7 +6,7 @@ import Logo from '../Logo/Logo';
 import Authorization from '../Authorization/Authorization';
 import { useFormWithValidation } from '../../hooks/useFormWithValidation';
 
-function Register({ onRegister }) {
+function Register({ onRegister, serverResponse }) {
   const {values, handleChange, errors, isValid, resetForm} = useFormWithValidation();
 
   function handleSubmit(e) {
@@ -31,9 +31,10 @@ function Register({ onRegister }) {
           <span className="form__error">{errors.email}</span>
 
           <p className="form__input-text">Пароль</p>
-          <input value={values.password} onChange={handleChange} type="password" name="password" className="form__input" required />
+          <input value={values.password} onChange={handleChange} type="password" name="password" className="form__input" required minLength="8"/>
           <span className="form__error">{errors.password}</span>
 
+          <p className="register__server-error">{serverResponse}</p>
           <button type="submit" className="form__btn" disabled={!isValid}>Зарегистрироваться</button>
       </Authorization>
 

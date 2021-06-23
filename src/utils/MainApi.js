@@ -8,7 +8,7 @@ export class MainApi {
     if (res.ok) {
       return res.json();
     }
-    return Promise.reject(`Ошибка: ${res.status}`);
+    return res.json().then(res => Promise.reject(res));
   }
 
   getMyMovies(token) {
@@ -73,26 +73,25 @@ export class MainApi {
       .then(this._checkResponse);
   }
 
-  // setUserInfo({name, about}, token) {
-  //   return fetch(`${this._url}/users/me`, {
-  //     method: 'PATCH',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'Authorization': `Bearer ${token}`
-  //     },
-  //     body: JSON.stringify({
-  //       name: name,
-  //       about: about
-  //     })
-  //   })
-  //     .then(this._checkResponse);
-  // }
+  updateUserInfo(name, email, token) {
+    return fetch(`${this._url}/users/me`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        name,
+        email,
+      })
+    })
+      .then(this._checkResponse);
+  }
 }
 
 const mainApi = new MainApi({
   url: 'http://localhost:5000',
   headers: {
-    // authorization: `Bearer ${localStorage.getItem('jwt')}`,
     'Content-Type': 'application/json'
   }
 });

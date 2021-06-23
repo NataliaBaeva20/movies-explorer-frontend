@@ -6,7 +6,7 @@ import Logo from '../Logo/Logo';
 import Authorization from '../Authorization/Authorization';
 import { useFormWithValidation } from '../../hooks/useFormWithValidation';
 
-function Login({ onLogin }) {
+function Login({ onLogin, serverResponse }) {
   const {values, handleChange, errors, isValid, resetForm} = useFormWithValidation();
 
   function handleSubmit(e) {
@@ -30,6 +30,7 @@ function Login({ onLogin }) {
         <input value={values.password} onChange={handleChange} type="password" name="password" className="form__input" required />
         <span className="form__error">{errors.password}</span>
 
+        <p className="login__server-error">{serverResponse}</p>
         <button type="submit" className="form__btn login__bnt" disabled={!isValid}>Войти</button>
       </Authorization>
 

@@ -26,15 +26,20 @@ function App() {
   const [token, setToken] = React.useState('');
   const history = useHistory();
 
+  const [loginServerResponse, setLoginServerResponse] = React.useState('');
+  const [registerServerResponse, setRegisterLoginServerResponse] = React.useState('');
+  const [updateUserServerResponse, setUpdateUserLoginServerResponse] = React.useState({message: '', success: false });
+
   React.useEffect(() => {
     getInitialMovies()
     .then((data) => {
       setApiMoviesList(data);
       // console.log(data)
+      // localStorage.setItem('movies', JSON.stringify(data));
+      // setMovies(JSON.parse(localStorage.getItem('movies')));
     })
     .catch(err => {
       setErrorServer(true);
-      // console.log(err);
     });
   }, []);
 
@@ -87,6 +92,38 @@ function App() {
       })
   }
 
+  function handleUpdateUser(name, email) {
+    mainApi.updateUserInfo(name, email, token)
+      .then(data => {
+        console.log(data);
+        setUpdateUserLoginServerResponse({
+          message: 'Данные успешно обновлены!',
+          success: true
+        });
+        setCurrentUser({ name: name, email: email });
+      })
+      .catch(err => {
+        console.log(err.message)
+        setUpdateUserLoginServerResponse({
+          message: err.message,
+          success: false
+        });
+      });
+  }
+
+  function getUserInfo(token) {
+    auth.getContent(token).then((res) => {
+      if (res) {
+        setCurrentUser({ name: res.name, email: res.email });
+        setLoggedIn(true);
+        setToken(localStorage.getItem('jwt'));
+        history.push('/movies');
+      }
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
+
   function handleLogin(email, password) {
     auth.authorize(email, password)
       .then(data => {
@@ -94,21 +131,28 @@ function App() {
           setLoggedIn(true);
           setToken(localStorage.getItem('jwt'));
           history.push('/movies');
+          getUserInfo(data.token);
         }
       })
+      .catch(err => {
+        setLoginServerResponse(err.message);
+      });
   }
 
-  function handelRegisterUser(name, email, password) {
-    console.log('регистрация');
+  function handleRegisterUser(name, email, password) {
     auth.register(name, email, password)
       .then(data => {
         handleLogin(email, password);
+      })
+      .catch(err => {
+        setRegisterLoginServerResponse(err.message);
       });
   }
 
   function handleSignOut() {
     setLoggedIn(false);
     localStorage.removeItem('jwt');
+    // localStorage.removeItem('movies');
     history.push('/signin');
   }
 
@@ -116,16 +160,7 @@ function App() {
     if (localStorage.getItem('jwt')) {
       const jwt = localStorage.getItem('jwt');
       if (jwt) {
-        auth.getContent(jwt).then((res) => {
-          if (res) {
-            setCurrentUser({ name: res.name, email: res.email });
-            setLoggedIn(true);
-            setToken(localStorage.getItem('jwt'));
-            history.push('/movies');
-          }
-        }).catch((err) => {
-          console.log(err);
-        });
+        getUserInfo(jwt);
       }
     }
   }
@@ -146,7 +181,7 @@ function App() {
 
   React.useEffect(() => {
     setMovies(JSON.parse(localStorage.getItem('movies')));
-    // console.log(JSON.parse(localStorage.getItem('movies')));
+    // setSavedMovies(JSON.parse(localStorage.getItem('savedMovies')));
   }, []);
 
   return (
@@ -179,12 +214,14 @@ function App() {
           loggedIn={loggedIn}
           component={Profile}
           onSignOut={handleSignOut}
+          onUpdateUser={handleUpdateUser}
+          serverResponse={updateUserServerResponse}
         />
         <Route path="/signup">
-          <Register onRegister={handelRegisterUser} />
+          <Register onRegister={handleRegisterUser} serverResponse={registerServerResponse} />
         </Route>
         <Route path="/signin">
-          <Login onLogin={handleLogin} />
+          <Login onLogin={handleLogin} serverResponse={loginServerResponse} />
         </Route>
         <Route path="*">
           <PageNotFound />

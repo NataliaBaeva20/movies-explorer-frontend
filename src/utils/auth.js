@@ -1,6 +1,6 @@
 export const BASE_URL = 'http://localhost:5000';
 
-const checkResponse = (res) => res.ok ? res.json() : Promise.reject(`Ошибка: ${res.statusText}`);
+const checkResponse = (res) => res.ok ? res.json() : res.json().then(res => Promise.reject(res));
 
 export const register = (name, email, password) => {
   return fetch(`${BASE_URL}/signup`, {
