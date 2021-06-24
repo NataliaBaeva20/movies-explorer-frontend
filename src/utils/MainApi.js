@@ -87,6 +87,18 @@ export class MainApi {
     })
       .then(this._checkResponse);
   }
+
+  getUserInfo = (token) => {
+    return fetch(`${this._url}/users/me`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      }
+    })
+    .then(this._checkResponse);
+  }
 }
 
 const mainApi = new MainApi({

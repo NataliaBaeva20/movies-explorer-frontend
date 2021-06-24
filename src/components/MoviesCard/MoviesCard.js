@@ -25,7 +25,6 @@ function MoviesCard({movie, saved, onMovieSave, onMovieDelete}) {
     if(saved) {
       onMovieDelete(movie._id);
     } else {
-      console.log(savedMovie);
       onMovieDelete(savedMovie._id);
       setIsSaved(false);
     }

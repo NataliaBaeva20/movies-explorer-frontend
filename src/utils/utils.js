@@ -4,3 +4,7 @@ export function setTimeFormat(time) {
 
   return `${hours === 0 ? '' : `${hours}ч` } ${minutes}м`;
 }
+
+export function searchShortMovies(movies) {
+  return movies.filter((item) => item.duration <= 50);
+}

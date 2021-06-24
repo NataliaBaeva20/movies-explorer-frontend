@@ -12,6 +12,7 @@
   height: 48px;
   position: relative;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   margin-right: 15px;
 }
@@ -52,6 +53,16 @@
 
 .search__button:hover {
   opacity: 0.8;
+}
+
+.search__button:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+.search__error {
+  width: 100%;
+  padding-left: 22px;
 }
 
 .search__switch-box {

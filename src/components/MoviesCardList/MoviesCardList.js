@@ -36,7 +36,9 @@ function MoviesCardList({movies, saved, errorServer, onMovieSave, onMovieDelete}
     setNumberAddCards(cardsOnPage.addCards);
   }, [screenWidth]);
 
-  const newList = movies.slice(0, numberInitialCards);
+  const newList = !saved ? movies.slice(0, numberInitialCards) : movies;
+  // const newList = movies.slice(0, numberInitialCards);
+  // const newList = movies.length !== 0 ? movies.slice(0, numberInitialCards) : movies;
 
   function addMoreCards() {
     setNumberInitialCards(numberCards => {

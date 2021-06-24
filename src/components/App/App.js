@@ -30,24 +30,27 @@ function App() {
   const [registerServerResponse, setRegisterLoginServerResponse] = React.useState('');
   const [updateUserServerResponse, setUpdateUserLoginServerResponse] = React.useState({message: '', success: false });
 
-  React.useEffect(() => {
-    getInitialMovies()
-    .then((data) => {
-      setApiMoviesList(data);
-      // console.log(data)
-      // localStorage.setItem('movies', JSON.stringify(data));
-      // setMovies(JSON.parse(localStorage.getItem('movies')));
-    })
-    .catch(err => {
-      setErrorServer(true);
-    });
-  }, []);
-
-  function searchMovies(word) {
-    setIsActive(!isActive);
-    const listFindMovies = apiMoviesList.filter((item) => {
+  function handleSearchMovies(movies, word) {
+    const findMovies = movies.filter((item) => {
       return item.nameRU.toLowerCase().includes(word);
     });
+    return findMovies;
+  }
+
+  function searchMyMovies(word) {
+    const movies = JSON.parse(localStorage.getItem('savedMovies'));
+    const listFindMovies = handleSearchMovies(movies, word);
+
+    if(listFindMovies.length !== 0) {
+      setSavedMovies(listFindMovies);
+    } else {
+      setSavedMovies([]);
+    }
+  }
+
+  function searchMovies(word) {
+    setIsActive(true);
+    const listFindMovies = handleSearchMovies(apiMoviesList, word);
 
     if (listFindMovies.length !== 0) {
       setIsActive(false);
@@ -74,7 +77,6 @@ function App() {
       nameEN: movie.nameEN,
     }, token)
       .then(savedMovie => {
-        console.log(savedMovie);
         const newSavedMovies = [...savedMovies, savedMovie];
         localStorage.setItem('savedMovies', JSON.stringify(newSavedMovies));
         setSavedMovies([...savedMovies, savedMovie]);
@@ -82,10 +84,8 @@ function App() {
   }
 
   function handleMovieDelete(id) {
-    console.log(id);
     mainApi.deleteMovie(id, token)
       .then(data => {
-        console.log(data);
         const newSavedMovies = savedMovies.filter((movie) => movie._id !== id);
         localStorage.setItem('savedMovies', JSON.stringify(newSavedMovies));
         setSavedMovies(newSavedMovies);
@@ -111,27 +111,21 @@ function App() {
       });
   }
 
-  function getUserInfo(token) {
-    auth.getContent(token).then((res) => {
-      if (res) {
-        setCurrentUser({ name: res.name, email: res.email });
-        setLoggedIn(true);
-        setToken(localStorage.getItem('jwt'));
-        history.push('/movies');
-      }
-    }).catch((err) => {
-      console.log(err);
-    });
-  }
-
   function handleLogin(email, password) {
     auth.authorize(email, password)
       .then(data => {
         if(data.token) {
           setLoggedIn(true);
           setToken(localStorage.getItem('jwt'));
+
+          mainApi.getUserInfo(data.token)
+            .then(data => {
+              setCurrentUser({ name: data.name, email: data.email });
+            })
+            .catch((err) => {
+              console.log(err);
+            });
           history.push('/movies');
-          getUserInfo(data.token);
         }
       })
       .catch(err => {
@@ -152,15 +146,25 @@ function App() {
   function handleSignOut() {
     setLoggedIn(false);
     localStorage.removeItem('jwt');
-    // localStorage.removeItem('movies');
-    history.push('/signin');
+    localStorage.removeItem('movies');
+    setMovies([]);
+    history.push('/');
   }
 
   function tokenCheck() {
     if (localStorage.getItem('jwt')) {
       const jwt = localStorage.getItem('jwt');
       if (jwt) {
-        getUserInfo(jwt);
+        auth.getContent(jwt).then((res) => {
+          if (res) {
+            setCurrentUser({ name: res.name, email: res.email });
+            setLoggedIn(true);
+            setToken(localStorage.getItem('jwt'));
+            history.push('/movies');
+          }
+        }).catch((err) => {
+          console.log(err);
+        });
       }
     }
   }
@@ -180,8 +184,24 @@ function App() {
   }, [loggedIn]);
 
   React.useEffect(() => {
-    setMovies(JSON.parse(localStorage.getItem('movies')));
-    // setSavedMovies(JSON.parse(localStorage.getItem('savedMovies')));
+    getInitialMovies()
+    .then((data) => {
+      setApiMoviesList(data);
+      // localStorage.setItem('movies', JSON.stringify(data));
+      // setMovies(JSON.parse(localStorage.getItem('movies')));
+    })
+    .catch(err => {
+      setErrorServer(true);
+    });
+  }, []);
+
+  React.useEffect(() => {
+    const movies = JSON.parse(localStorage.getItem('movies'));
+    if(movies && movies !== 0) {
+      setMovies(movies);
+    } else {
+      setMovies([]);
+    }
   }, []);
 
   return (
@@ -208,6 +228,7 @@ function App() {
           movies={savedMovies}
           loggedIn={loggedIn}
           onMovieDelete={handleMovieDelete}
+          onSubmitSearchForm={searchMyMovies}
         />
         <ProtectedRoute
           exact path="/profile"
