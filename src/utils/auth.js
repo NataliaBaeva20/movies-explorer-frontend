@@ -1,3 +1,4 @@
+// export const BASE_URL = 'https://api.my-movies.nomoredomains.club';
 export const BASE_URL = 'http://localhost:5000';
 
 const checkResponse = (res) => res.ok ? res.json() : res.json().then(res => Promise.reject(res));

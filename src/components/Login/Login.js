@@ -27,7 +27,7 @@ function Login({ onLogin, serverResponse }) {
         <span className="form__error">{errors.email}</span>
 
         <p className="form__input-text">Пароль</p>
-        <input value={values.password} onChange={handleChange} type="password" name="password" className="form__input" required />
+        <input value={values.password} onChange={handleChange} type="password" name="password" className="form__input" required minLength="8"/>
         <span className="form__error">{errors.password}</span>
 
         <p className="login__server-error">{serverResponse}</p>

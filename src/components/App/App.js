@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch, useHistory } from 'react-router-dom';
+import { Route, Switch, useHistory, Redirect } from 'react-router-dom';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext'
 import { getInitialMovies } from '../../utils/MoviesApi';
 import mainApi from '../../utils/MainApi';
@@ -16,7 +16,7 @@ import Profile from '../Profile/Profile';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 
 function App() {
-  const [loggedIn, setLoggedIn] = React.useState(false);
+  const [loggedIn, setLoggedIn] = React.useState(JSON.parse(localStorage.getItem('loggedIn')));
   const [currentUser, setCurrentUser] = React.useState({name: 'Имя', email: 'pochta@yandex.ru'});
   const [apiMoviesList, setApiMoviesList] = React.useState([]);
   const [movies, setMovies] = React.useState([]);
@@ -101,7 +101,6 @@ function App() {
   function handleUpdateUser(name, email) {
     mainApi.updateUserInfo(name, email, token)
       .then(data => {
-        console.log(data);
         setUpdateUserLoginServerResponse({
           message: 'Данные успешно обновлены!',
           success: true
@@ -121,7 +120,8 @@ function App() {
     auth.authorize(email, password)
       .then(data => {
         if(data.token) {
-          setLoggedIn(true);
+          localStorage.setItem('loggedIn', 'true');
+          setLoggedIn(JSON.parse(localStorage.getItem('loggedIn')));
           setToken(localStorage.getItem('jwt'));
 
           mainApi.getUserInfo(data.token)
@@ -150,34 +150,35 @@ function App() {
   }
 
   function handleSignOut() {
-    setLoggedIn(false);
+    localStorage.setItem('loggedIn', 'false');
+    setLoggedIn(JSON.parse(localStorage.getItem('loggedIn')));
     localStorage.removeItem('jwt');
     localStorage.removeItem('movies');
     setMovies([]);
     history.push('/');
   }
 
-  React.useEffect(() => {
-    function tokenCheck() {
-      if (localStorage.getItem('jwt')) {
-        const jwt = localStorage.getItem('jwt');
-        if (jwt) {
-          auth.getContent(jwt).then((res) => {
-            if (res) {
-              setCurrentUser({ name: res.name, email: res.email });
-              setLoggedIn(true);
-              setToken(localStorage.getItem('jwt'));
-              history.push('/movies');
-            }
-          }).catch((err) => {
-            console.log(err);
-          });
-        }
+  function tokenCheck() {
+    if (localStorage.getItem('jwt')) {
+      const jwt = localStorage.getItem('jwt');
+      if (jwt) {
+        auth.getContent(jwt).then((res) => {
+          if (res) {
+            setCurrentUser({ name: res.name, email: res.email });
+            setToken(localStorage.getItem('jwt'));
+            localStorage.setItem('loggedIn', 'true');
+            setLoggedIn(JSON.parse(localStorage.getItem('loggedIn')));
+          }
+        }).catch((err) => {
+          console.log(err);
+        });
       }
     }
+  }
 
+  React.useEffect(() => {
     tokenCheck();
-  }, [history]);
+  }, []);
 
   React.useEffect(() => {
     if(loggedIn) {
@@ -220,6 +221,9 @@ function App() {
           <Route exact path="/">
             <Main loggedIn={loggedIn} />
           </Route>
+          {/* <Route exact path="/">
+            {loggedIn ? <Redirect to="/"/> : <Redirect to="/signin" />}
+          </Route> */}
           <ProtectedRoute
             exact path="/movies"
             component={Movies}
@@ -249,10 +253,10 @@ function App() {
             onUpdateUser={handleUpdateUser}
             serverResponse={updateUserServerResponse}
           />
-          <Route exact path="/signin">
+          <Route path="/signin">
             <Login onLogin={handleLogin} serverResponse={loginServerResponse} />
           </Route>
-          <Route exact path="/signup">
+          <Route path="/signup">
             <Register onRegister={handleRegisterUser} serverResponse={registerServerResponse} />
           </Route>
           <Route path="*">
