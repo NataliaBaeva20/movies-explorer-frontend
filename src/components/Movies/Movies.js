@@ -11,6 +11,7 @@ import MoviesCardList from '../MoviesCardList/MoviesCardList';
 function Movies({movies, loggedIn, onSubmitSearchForm, isActive, errorServer, notFoundMovies, onMovieSave, onMovieDelete}) {
   const [shortMovies, setShortMovies] = React.useState([]);
   const [isShorted, setIsShorted] = React.useState(false);
+  const [notFoundShort, setNotFoundShort] = React.useState(false);
 
   function handleSwitchShortMovies() {
     setIsShorted(!isShorted);
@@ -21,9 +22,13 @@ function Movies({movies, loggedIn, onSubmitSearchForm, isActive, errorServer, no
       const listShortMovies = searchShortMovies(movies);
       if (listShortMovies.length !== 0) {
         setShortMovies(listShortMovies);
+        setNotFoundShort(false);
       } else {
         setShortMovies([]);
+        setNotFoundShort(true);
       }
+    } else {
+      !isShorted && setNotFoundShort(false);
     }
   }, [movies, isShorted]);
 
@@ -33,7 +38,7 @@ function Movies({movies, loggedIn, onSubmitSearchForm, isActive, errorServer, no
       <SearchForm onSubmit={onSubmitSearchForm} onHandleCheckbox={handleSwitchShortMovies} />
       <Preloader isActive={isActive} />
       {!isActive && (<MoviesCardList  movies={isShorted ? shortMovies : movies} saved={false} errorServer={errorServer}
-                      onMovieSave={onMovieSave} onMovieDelete={onMovieDelete} notFoundMovies={notFoundMovies}/>)}
+                      onMovieSave={onMovieSave} onMovieDelete={onMovieDelete} notFoundMovies={notFoundShort ? notFoundShort : notFoundMovies}/>)}
       <Footer />
     </>
   );

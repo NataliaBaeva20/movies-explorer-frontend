@@ -1,6 +1,6 @@
 # movies-explorer-frontend
 
-Репозиторий фронтенд части дипломного проекта Movies Explorer. Верстка и JSX сайта.
+Репозиторий фронтенд части дипломного проекта Movies Explorer. React и JS.
 
 
 **Ссылки**

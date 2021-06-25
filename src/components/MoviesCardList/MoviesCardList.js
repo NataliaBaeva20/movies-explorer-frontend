@@ -46,8 +46,9 @@ function MoviesCardList({movies, saved, errorServer, onMovieSave, onMovieDelete,
 
   return (
     <section className="movies page__section">
-      { saved ? <p className={`movies__not-found ${!notFoundSavedMovies && 'movies__not-found_invisible'}`}>В сохраненных фильмах ничего не найдено</p>
-              : <p className={`movies__not-found ${!notFoundMovies && 'movies__not-found_invisible'}`}>Ничего не найдено</p> }
+      { saved ? <p className={`movies__not-found ${notFoundSavedMovies ? '' : 'movies__not-found_invisible'}`}>В сохраненных фильмах ничего не найдено</p>
+              : <p className={`movies__not-found ${notFoundMovies ? '' : 'movies__not-found_invisible'}`}>Ничего не найдено</p> }
+
       <p className={`movies__not-found ${!errorServer && 'movies__not-found_invisible'}`}>Во время запроса произошла ошибка. Возможно,
                     проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз.</p>
       {
