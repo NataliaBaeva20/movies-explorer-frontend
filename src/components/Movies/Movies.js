@@ -32,7 +32,8 @@ function Movies({movies, loggedIn, onSubmitSearchForm, isActive, errorServer, no
       <Header loggedIn={loggedIn} />
       <SearchForm onSubmit={onSubmitSearchForm} onHandleCheckbox={handleSwitchShortMovies} />
       <Preloader isActive={isActive} />
-      <MoviesCardList  movies={isShorted ? shortMovies : movies} saved={false} errorServer={errorServer} onMovieSave={onMovieSave} onMovieDelete={onMovieDelete} notFoundMovies={notFoundMovies}/>
+      {!isActive && (<MoviesCardList  movies={isShorted ? shortMovies : movies} saved={false} errorServer={errorServer}
+                      onMovieSave={onMovieSave} onMovieDelete={onMovieDelete} notFoundMovies={notFoundMovies}/>)}
       <Footer />
     </>
   );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch, useHistory, Redirect } from 'react-router-dom';
+import { Route, Switch, useHistory } from 'react-router-dom';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext'
 import { getInitialMovies } from '../../utils/MoviesApi';
 import mainApi from '../../utils/MainApi';
@@ -54,17 +54,33 @@ function App() {
 
   function searchMovies(word) {
     setIsActivePreloader(true);
-    const listFindMovies = handleSearchMovies(apiMoviesList, word);
 
-    if (listFindMovies.length !== 0) {
-      setIsActivePreloader(false);
-      localStorage.setItem('movies', JSON.stringify(listFindMovies));
-      setMovies(JSON.parse(localStorage.getItem('movies')));
-      setNotFoundMovies(false);
+    function filterMovies(movies) {
+      const listFindMovies = handleSearchMovies(movies, word);
+      if (listFindMovies.length !== 0) {
+        setIsActivePreloader(false);
+        localStorage.setItem('movies', JSON.stringify(listFindMovies));
+        setMovies(JSON.parse(localStorage.getItem('movies')));
+        setNotFoundMovies(false);
+      } else {
+        setIsActivePreloader(false);
+        setNotFoundMovies(true);
+        setMovies([]);
+      }
+    }
+
+    if (apiMoviesList.length === 0) {
+      getInitialMovies()
+        .then((data) => {
+          setApiMoviesList(data);
+          filterMovies(data);
+        })
+        .catch(err => {
+          console.log(err);
+          setErrorServer(true);
+        });
     } else {
-      setIsActivePreloader(false);
-      setNotFoundMovies(true);
-      setMovies([]);
+      filterMovies(apiMoviesList);
     }
   }
 
@@ -195,14 +211,14 @@ function App() {
   }, [loggedIn]);
 
   React.useEffect(() => {
-    getInitialMovies()
-    .then((data) => {
-      setApiMoviesList(data);
-    })
-    .catch(err => {
-      console.log(err);
-      setErrorServer(true);
-    });
+    // getInitialMovies()
+    // .then((data) => {
+    //   setApiMoviesList(data);
+    // })
+    // .catch(err => {
+    //   console.log(err);
+    //   setErrorServer(true);
+    // });
   }, []);
 
   React.useEffect(() => {
@@ -221,9 +237,6 @@ function App() {
           <Route exact path="/">
             <Main loggedIn={loggedIn} />
           </Route>
-          {/* <Route exact path="/">
-            {loggedIn ? <Redirect to="/"/> : <Redirect to="/signin" />}
-          </Route> */}
           <ProtectedRoute
             exact path="/movies"
             component={Movies}
