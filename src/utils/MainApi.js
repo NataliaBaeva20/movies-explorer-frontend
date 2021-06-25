@@ -102,7 +102,7 @@ export class MainApi {
 }
 
 const mainApi = new MainApi({
-  url: 'http://localhost:5000',
+  url: 'https://api.my-movies.nomoredomains.club',
   headers: {
     'Content-Type': 'application/json'
   }
