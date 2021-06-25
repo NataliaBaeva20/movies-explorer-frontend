@@ -8,12 +8,11 @@ import SearchForm from '../SearchForm/SearchForm';
 import Preloader from '../Preloader/Preloader';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
 
-function Movies({movies, loggedIn, onSubmitSearchForm, isActive, errorServer, onMovieSave, onMovieDelete}) {
+function Movies({movies, loggedIn, onSubmitSearchForm, isActive, errorServer, notFoundMovies, onMovieSave, onMovieDelete}) {
   const [shortMovies, setShortMovies] = React.useState([]);
   const [isShorted, setIsShorted] = React.useState(false);
 
   function handleSwitchShortMovies() {
-    console.log('aaa')
     setIsShorted(!isShorted);
   }
 
@@ -33,7 +32,7 @@ function Movies({movies, loggedIn, onSubmitSearchForm, isActive, errorServer, on
       <Header loggedIn={loggedIn} />
       <SearchForm onSubmit={onSubmitSearchForm} onHandleCheckbox={handleSwitchShortMovies} />
       <Preloader isActive={isActive} />
-      <MoviesCardList  movies={isShorted ? shortMovies : movies} saved={false} errorServer={errorServer} onMovieSave={onMovieSave} onMovieDelete={onMovieDelete} />
+      <MoviesCardList  movies={isShorted ? shortMovies : movies} saved={false} errorServer={errorServer} onMovieSave={onMovieSave} onMovieDelete={onMovieDelete} notFoundMovies={notFoundMovies}/>
       <Footer />
     </>
   );

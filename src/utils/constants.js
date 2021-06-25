@@ -1,4 +1,4 @@
-export const numberCardsOnPage = {
+export const NUMBER_CARDS = {
   laptopScreen: {
     width: 1280,
     initialCards: 12,
@@ -15,3 +15,5 @@ export const numberCardsOnPage = {
     addCards: 1
   }
 }
+
+export const SHORT_FILM_MAX_TIME = 40;

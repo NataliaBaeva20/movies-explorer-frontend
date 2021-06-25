@@ -9,7 +9,6 @@ import { useFormWithValidation } from '../../hooks/useFormWithValidation';
 function Profile({ loggedIn, onSignOut, onUpdateUser, serverResponse }) {
   const {values, setValues, handleChange, errors, isValid} = useFormWithValidation();
   const currentUser = React.useContext(CurrentUserContext);
-
   const [isDisable, setIsDisable] = React.useState(false);
 
 
@@ -24,7 +23,7 @@ function Profile({ loggedIn, onSignOut, onUpdateUser, serverResponse }) {
 
     e.preventDefault();
     onUpdateUser(name, email);
-    setIsDisable(true);
+    setIsDisable(false);
   }
 
   return (
@@ -46,7 +45,7 @@ function Profile({ loggedIn, onSignOut, onUpdateUser, serverResponse }) {
                                 : <button type="submit" className="profile__button profile__button_type_save" disabled={!isValid}>Сохранить</button> }
         </form>
         {
-          !checkValuesInput() || isDisable ? <Link to="/signin" className="profile__link" onClick={onSignOut}>Выйти из аккаунта</Link> : ''
+          !checkValuesInput() || isDisable ? (<Link to="/" className="profile__link" onClick={onSignOut}>Выйти из аккаунта</Link>) : ''
         }
       </section>
     </>

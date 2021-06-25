@@ -7,12 +7,11 @@ import Footer from '../Footer/Footer';
 import SearchForm from '../SearchForm/SearchForm';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
 
-function SavedMovies({movies, loggedIn, onMovieDelete, onSubmitSearchForm}) {
+function SavedMovies({movies, loggedIn, onMovieDelete, onSubmitSearchForm, notFoundSavedMovies}) {
   const [shortMovies, setShortMovies] = React.useState([]);
   const [isShorted, setIsShorted] = React.useState(false);
 
   function handleSwitchShortMovies() {
-    console.log('aaa')
     setIsShorted(!isShorted);
   }
 
@@ -31,7 +30,7 @@ function SavedMovies({movies, loggedIn, onMovieDelete, onSubmitSearchForm}) {
     <>
       <Header loggedIn={loggedIn} />
       <SearchForm onSubmit={onSubmitSearchForm} onHandleCheckbox={handleSwitchShortMovies} />
-      <MoviesCardList movies={isShorted ? shortMovies : movies} saved={true} onMovieDelete={onMovieDelete} />
+      <MoviesCardList movies={isShorted ? shortMovies : movies} saved={true} onMovieDelete={onMovieDelete} notFoundSavedMovies={notFoundSavedMovies}/>
       <Footer />
     </>
   );

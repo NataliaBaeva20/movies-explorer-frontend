@@ -1,3 +1,5 @@
+import { SHORT_FILM_MAX_TIME } from './constants';
+
 export function setTimeFormat(time) {
   const hours = Math.trunc(time / 60);
   const minutes = time % 60;
@@ -6,5 +8,5 @@ export function setTimeFormat(time) {
 }
 
 export function searchShortMovies(movies) {
-  return movies.filter((item) => item.duration <= 50);
+  return movies.filter((item) => item.duration <= SHORT_FILM_MAX_TIME);
 }

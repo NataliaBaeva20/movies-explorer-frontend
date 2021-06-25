@@ -1,10 +1,9 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
 
-// компонент ProtectedRoute принимает другой компонент в качестве пропса
 const ProtectedRoute = ({ component: Component, ...props }) => {
   return (
-    <Route>
+    <Route path={props.path}>
       {() =>
         props.loggedIn ? <Component {...props} /> : <Redirect to="/" />
       }

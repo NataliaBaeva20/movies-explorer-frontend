@@ -8,7 +8,7 @@
   font-weight: normal;
   font-size: 16px;
   line-height: 19px;
-  margin: 100px 0 50px;
+  margin: 70px 0 0;
   text-align: center;
   padding: 0 200px;
 }
@@ -26,6 +26,10 @@
   padding: 70px 0 10px 0;
 }
 
+.movies__button-area {
+  margin: 50px 0 80px;
+}
+
 .movies__button {
   width: 320px;
   background: #F9F9F9;
@@ -35,7 +39,6 @@
   font-weight: 500;
   font-size: 12px;
   line-height: 15px;
-  margin: 50px 0 80px;
   cursor: pointer;
   transition: opacity .3s ease-in;
 }

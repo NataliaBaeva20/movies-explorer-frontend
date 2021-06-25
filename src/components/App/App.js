@@ -21,8 +21,10 @@ function App() {
   const [apiMoviesList, setApiMoviesList] = React.useState([]);
   const [movies, setMovies] = React.useState([]);
   const [savedMovies, setSavedMovies] = React.useState([]);
-  const [isActive, setIsActive] = React.useState(false);
+  const [isActivePreloader, setIsActivePreloader] = React.useState(false);
   const [errorServer, setErrorServer] = React.useState(false);
+  const [notFoundMovies, setNotFoundMovies] = React.useState(false);
+  const [notFoundSavedMovies, setNotFoundSavedMovies] = React.useState(false);
   const [token, setToken] = React.useState('');
   const history = useHistory();
 
@@ -43,21 +45,25 @@ function App() {
 
     if(listFindMovies.length !== 0) {
       setSavedMovies(listFindMovies);
+      setNotFoundSavedMovies(false);
     } else {
       setSavedMovies([]);
+      setNotFoundSavedMovies(true);
     }
   }
 
   function searchMovies(word) {
-    setIsActive(true);
+    setIsActivePreloader(true);
     const listFindMovies = handleSearchMovies(apiMoviesList, word);
 
     if (listFindMovies.length !== 0) {
-      setIsActive(false);
+      setIsActivePreloader(false);
       localStorage.setItem('movies', JSON.stringify(listFindMovies));
       setMovies(JSON.parse(localStorage.getItem('movies')));
+      setNotFoundMovies(false);
     } else {
-      setIsActive(false);
+      setIsActivePreloader(false);
+      setNotFoundMovies(true);
       setMovies([]);
     }
   }
@@ -151,27 +157,27 @@ function App() {
     history.push('/');
   }
 
-  function tokenCheck() {
-    if (localStorage.getItem('jwt')) {
-      const jwt = localStorage.getItem('jwt');
-      if (jwt) {
-        auth.getContent(jwt).then((res) => {
-          if (res) {
-            setCurrentUser({ name: res.name, email: res.email });
-            setLoggedIn(true);
-            setToken(localStorage.getItem('jwt'));
-            history.push('/movies');
-          }
-        }).catch((err) => {
-          console.log(err);
-        });
+  React.useEffect(() => {
+    function tokenCheck() {
+      if (localStorage.getItem('jwt')) {
+        const jwt = localStorage.getItem('jwt');
+        if (jwt) {
+          auth.getContent(jwt).then((res) => {
+            if (res) {
+              setCurrentUser({ name: res.name, email: res.email });
+              setLoggedIn(true);
+              setToken(localStorage.getItem('jwt'));
+              history.push('/movies');
+            }
+          }).catch((err) => {
+            console.log(err);
+          });
+        }
       }
     }
-  }
 
-  React.useEffect(() => {
     tokenCheck();
-  }, []);
+  }, [history]);
 
   React.useEffect(() => {
     if(loggedIn) {
@@ -179,6 +185,10 @@ function App() {
         .then(data => {
           setSavedMovies(data);
           localStorage.setItem('savedMovies', JSON.stringify(data));
+        })
+        .catch(err => {
+          console.log(err);
+          setErrorServer(true);
         });
     }
   }, [loggedIn]);
@@ -187,10 +197,9 @@ function App() {
     getInitialMovies()
     .then((data) => {
       setApiMoviesList(data);
-      // localStorage.setItem('movies', JSON.stringify(data));
-      // setMovies(JSON.parse(localStorage.getItem('movies')));
     })
     .catch(err => {
+      console.log(err);
       setErrorServer(true);
     });
   }, []);
@@ -206,49 +215,51 @@ function App() {
 
   return (
     <CurrentUserContext.Provider value={currentUser} >
-    <div className="page">
-      <Switch>
-        <Route exact path="/">
-          <Main loggedIn={loggedIn} />
-        </Route>
-        <ProtectedRoute
-          exact path="/movies"
-          component={Movies}
-          loggedIn={loggedIn}
-          movies={movies}
-          isActive={isActive}
-          errorServer={errorServer}
-          onSubmitSearchForm={searchMovies}
-          onMovieSave={handleMovieSave}
-          onMovieDelete={handleMovieDelete}
-        />
-        <ProtectedRoute
-          exact path="/saved-movies"
-          component={SavedMovies}
-          movies={savedMovies}
-          loggedIn={loggedIn}
-          onMovieDelete={handleMovieDelete}
-          onSubmitSearchForm={searchMyMovies}
-        />
-        <ProtectedRoute
-          exact path="/profile"
-          loggedIn={loggedIn}
-          component={Profile}
-          onSignOut={handleSignOut}
-          onUpdateUser={handleUpdateUser}
-          serverResponse={updateUserServerResponse}
-        />
-        <Route path="/signup">
-          <Register onRegister={handleRegisterUser} serverResponse={registerServerResponse} />
-        </Route>
-        <Route path="/signin">
-          <Login onLogin={handleLogin} serverResponse={loginServerResponse} />
-        </Route>
-        <Route path="*">
-          <PageNotFound />
-        </Route>
-      </Switch>
-    </div>
+      <div className="page">
+        <Switch>
+          <Route exact path="/">
+            <Main loggedIn={loggedIn} />
+          </Route>
+          <ProtectedRoute
+            exact path="/movies"
+            component={Movies}
+            loggedIn={loggedIn}
+            movies={movies}
+            isActive={isActivePreloader}
+            errorServer={errorServer}
+            notFoundMovies={notFoundMovies}
+            onSubmitSearchForm={searchMovies}
+            onMovieSave={handleMovieSave}
+            onMovieDelete={handleMovieDelete}
+          />
+          <ProtectedRoute
+            exact path="/saved-movies"
+            component={SavedMovies}
+            movies={savedMovies}
+            loggedIn={loggedIn}
+            onMovieDelete={handleMovieDelete}
+            onSubmitSearchForm={searchMyMovies}
+            notFoundSavedMovies={notFoundSavedMovies}
+          />
+          <ProtectedRoute
+            exact path="/profile"
+            loggedIn={loggedIn}
+            component={Profile}
+            onSignOut={handleSignOut}
+            onUpdateUser={handleUpdateUser}
+            serverResponse={updateUserServerResponse}
+          />
+          <Route exact path="/signin">
+            <Login onLogin={handleLogin} serverResponse={loginServerResponse} />
+          </Route>
+          <Route exact path="/signup">
+            <Register onRegister={handleRegisterUser} serverResponse={registerServerResponse} />
+          </Route>
+          <Route path="*">
+            <PageNotFound />
+          </Route>
+        </Switch>
+      </div>
     </CurrentUserContext.Provider>
   );
 }
