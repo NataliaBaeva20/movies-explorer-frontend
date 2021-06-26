@@ -4,9 +4,10 @@ import './Login.css';
 
 import Logo from '../Logo/Logo';
 import Authorization from '../Authorization/Authorization';
+import Preloader from '../Preloader/Preloader';
 import { useFormWithValidation } from '../../hooks/useFormWithValidation';
 
-function Login({ onLogin, serverResponse }) {
+function Login({ onLogin, serverResponse, isActive }) {
   const {values, handleChange, errors, isValid, resetForm} = useFormWithValidation();
 
   function handleSubmit(e) {
@@ -31,7 +32,7 @@ function Login({ onLogin, serverResponse }) {
         <span className="form__error">{errors.password}</span>
 
         <p className="login__server-error">{serverResponse}</p>
-        <button type="submit" className="form__btn login__bnt" disabled={!isValid}>Войти</button>
+        <button type="submit" className="form__btn login__bnt" disabled={!isValid}>{isActive ? <Preloader isActive={isActive} isAuth={true} /> : 'Войти'}</button>
       </Authorization>
 
       <p className="auth__subtitle">Ещё не зарегистрированы? <Link to="/signup" className="auth__link">Регистрация</Link></p>

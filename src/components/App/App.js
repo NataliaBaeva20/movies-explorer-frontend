@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch, useHistory } from 'react-router-dom';
+import { Route, Switch, useHistory, Redirect } from 'react-router-dom';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext'
 import { getInitialMovies } from '../../utils/MoviesApi';
 import mainApi from '../../utils/MainApi';
@@ -115,8 +115,11 @@ function App() {
   }
 
   function handleUpdateUser(name, email) {
+    setIsActivePreloader(true);
+
     mainApi.updateUserInfo(name, email, token)
       .then(data => {
+        setIsActivePreloader(false);
         setUpdateUserLoginServerResponse({
           message: 'Данные успешно обновлены!',
           success: true
@@ -124,6 +127,7 @@ function App() {
         setCurrentUser({ name: name, email: email });
       })
       .catch(err => {
+        setIsActivePreloader(false);
         console.log(err.message)
         setUpdateUserLoginServerResponse({
           message: err.message,
@@ -133,8 +137,11 @@ function App() {
   }
 
   function handleLogin(email, password) {
+    setIsActivePreloader(true);
+
     auth.authorize(email, password)
       .then(data => {
+        setIsActivePreloader(false);
         if(data.token) {
           localStorage.setItem('loggedIn', 'true');
           setLoggedIn(JSON.parse(localStorage.getItem('loggedIn')));
@@ -151,16 +158,20 @@ function App() {
         }
       })
       .catch(err => {
+        setIsActivePreloader(false);
         setLoginServerResponse(err.message);
       });
   }
 
   function handleRegisterUser(name, email, password) {
+    setIsActivePreloader(true);
     auth.register(name, email, password)
       .then(data => {
+        setIsActivePreloader(false);
         handleLogin(email, password);
       })
       .catch(err => {
+        setIsActivePreloader(false);
         setRegisterLoginServerResponse(err.message);
       });
   }
@@ -254,12 +265,13 @@ function App() {
             onSignOut={handleSignOut}
             onUpdateUser={handleUpdateUser}
             serverResponse={updateUserServerResponse}
+            isActive={isActivePreloader}
           />
           <Route path="/signin">
-            <Login onLogin={handleLogin} serverResponse={loginServerResponse} />
+            { !loggedIn ? (<Login onLogin={handleLogin} serverResponse={loginServerResponse} isActive={isActivePreloader}/>) : (<Redirect to="/" />) }
           </Route>
           <Route path="/signup">
-            <Register onRegister={handleRegisterUser} serverResponse={registerServerResponse} />
+            { !loggedIn ? (<Register onRegister={handleRegisterUser} serverResponse={registerServerResponse} isActive={isActivePreloader}/>) : (<Redirect to="/" />) }
           </Route>
           <Route path="*">
             <PageNotFound />
