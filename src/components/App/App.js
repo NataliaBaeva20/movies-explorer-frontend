@@ -211,17 +211,6 @@ function App() {
   }, [loggedIn]);
 
   React.useEffect(() => {
-    // getInitialMovies()
-    // .then((data) => {
-    //   setApiMoviesList(data);
-    // })
-    // .catch(err => {
-    //   console.log(err);
-    //   setErrorServer(true);
-    // });
-  }, []);
-
-  React.useEffect(() => {
     const movies = JSON.parse(localStorage.getItem('movies'));
     if(movies && movies !== 0) {
       setMovies(movies);

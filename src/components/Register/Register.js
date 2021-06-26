@@ -14,7 +14,7 @@ function Register({ onRegister, serverResponse }) {
 
     e.preventDefault();
     onRegister(name, email, password);
-    resetForm();
+    resetForm({}, {}, false);
   }
 
   return (
