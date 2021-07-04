@@ -1,0 +1,30 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.page__section {
+  width: calc(100% - 140px);
+  margin: 0 auto;
+}
+
+@media screen and (max-width: 768px) {
+  .page__section {
+    width: calc(100% - 100px);
+  }
+}
+
+@media screen and (max-width: 526px) {
+  .page__section {
+    width: calc(100% - 36px);
+  }
+
+  .page__section-title {
+    font-size: 18px;
+    line-height: 22px;
+    padding-bottom: 28px;
+  }
+}
