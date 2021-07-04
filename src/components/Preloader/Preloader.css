@@ -49,10 +49,23 @@
     padding: 20px;
 }
 
+.preloader_small {
+  padding: 0;
+}
+
+.preloader_inactive {
+  display: none;
+}
+
 .preloader__container {
     width: 100px;
     height: 100px;
     position: relative;
+}
+
+.preloader__container_small {
+  width: 35px;
+  height: 35px;
 }
 
 .preloader__round {
@@ -74,6 +87,17 @@
     top: 0;
     left: 0;
     border-radius: 50px;
+}
+
+.preloader__round_small {
+  width: 35px;
+  height: 35px;
+}
+
+.preloader__round_small::after,
+.preloader__round_small::before {
+  width: 35px;
+  height: 35px;
 }
 
 .preloader__round::after {

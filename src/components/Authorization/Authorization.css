@@ -21,7 +21,7 @@
 .form__input {
   width: 100%;
   padding: 0 0 10px 0;
-  font-weight: 500;
+  font-weight: 400;
   font-size: 14px;
   line-height: 17px;
   border: none;
@@ -32,6 +32,7 @@
 
 .form__input:focus {
   border-bottom: 1px solid #3456F3;
+  font-weight: 500;
 }
 
 .form__input-error {
@@ -59,7 +60,6 @@
   color: #fff;
   border: none;
   border-radius: 3px;
-  margin-top: 134px;
   transition: opacity .3s ease-in;
   padding: 0;
   outline: none;
@@ -72,6 +72,13 @@
 .form__btn:hover {
   opacity: 0.8;
   cursor: pointer;
+}
+
+.form__btn:disabled {
+  background: #F8F8F8;
+  color: #C2C2C2;
+  cursor: default;
+  opacity: 1;
 }
 
 .auth__subtitle {
@@ -97,9 +104,5 @@
 @media screen and (max-width: 425px) {
   .auth__title {
     margin: 50px 0 80px;
-  }
-
-  .form__btn {
-    margin-top: 222px;
   }
 }

@@ -4,22 +4,35 @@ import './Login.css';
 
 import Logo from '../Logo/Logo';
 import Authorization from '../Authorization/Authorization';
+import Preloader from '../Preloader/Preloader';
+import { useFormWithValidation } from '../../hooks/useFormWithValidation';
 
-function Login() {
+function Login({ onLogin, serverResponse, isActive }) {
+  const {values, handleChange, errors, isValid, resetForm} = useFormWithValidation();
+
+  function handleSubmit(e) {
+    const { email, password } = values;
+
+    e.preventDefault();
+    onLogin(email, password);
+    resetForm({}, {}, false);
+  }
+
   return (
     <section className="login">
       <Logo />
 
-      <Authorization title="Рады видеть!" name="login">
+      <Authorization title="Рады видеть!" name="login" onSubmit={handleSubmit}>
         <p className="form__input-text">E-mail</p>
-        <input id="email-user" type="url" name="email" className="form__input" required />
-        <span className="form__error email-user-error">Ошибка</span>
+        <input value={values.email || ''} onChange={handleChange} type="email" name="email" className="form__input" required />
+        <span className="form__error">{errors.email}</span>
 
         <p className="form__input-text">Пароль</p>
-        <input id="password" type="password" name="password" className="form__input" required />
-        <span className="form__error password-error">Что-то пошло не так...</span>
+        <input value={values.password || ''} onChange={handleChange} type="password" name="password" className="form__input" required minLength="8"/>
+        <span className="form__error">{errors.password}</span>
 
-        <button type="submit" className="form__btn login__bnt">Войти</button>
+        <p className="login__server-error">{serverResponse}</p>
+        <button type="submit" className="form__btn login__bnt" disabled={!isValid}>{isActive ? <Preloader isActive={isActive} isAuth={true} /> : 'Войти'}</button>
       </Authorization>
 
       <p className="auth__subtitle">Ещё не зарегистрированы? <Link to="/signup" className="auth__link">Регистрация</Link></p>

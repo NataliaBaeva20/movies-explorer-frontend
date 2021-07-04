@@ -10,6 +10,7 @@
   font-size: 24px;
   line-height: 29px;
   margin: 0 0 123px 0;
+  text-align: center;
 }
 
 .profile__form {
@@ -23,9 +24,10 @@
   width: 100%;
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
   border-bottom: #E8E8E8 1px solid;
   margin-bottom: 17px;
-  padding: 0 0 16px;
+  padding: 0 0 2px;
 }
 
 .profile__label:last-of-type {
@@ -35,16 +37,23 @@
 
 .profile__input {
   width: 80%;
+  padding: 0;
   border: none;
   font-weight: normal;
   font-size: 11px;
   line-height: 13px;
   text-align: right;
   outline: none;
+  justify-self: end;
 }
 
 .profile__input:focus {
   box-shadow: 0 0 4px 1px rgba(148, 166, 245, 0.73);
+}
+
+.profile__error {
+  width: 100%;
+  margin-top: 4px;
 }
 
 .profile__button {
@@ -54,14 +63,38 @@
   width: 100%;
   border: none;
   padding: 0;
-  margin: 204px 0 0;
   background: none;
   cursor: pointer;
-  transition: opacity .3s ease-in;
+  color: #000000;
 }
 
-.profile__button:hover {
+.profile__button:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+.profile__button_type_save {
+  height: 45px;
+  background-color: #3456F3;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  transition: opacity .3s ease-in;
+  outline: none;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.profile__button_type_save:hover {
   opacity: 0.8;
+}
+
+.profile__button_type_save:disabled {
+  background: #F8F8F8;
+  cursor: default;
+  color: #C2C2C2;
+  opacity: 1;
 }
 
 .profile__link {
@@ -80,6 +113,21 @@
   opacity: 0.7;
 }
 
+.profile__respons {
+  margin: 170px 0 20px;
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: normal;
+  font-size: 11px;
+  line-height: 13px;
+  color: #FF3055;
+  min-height: 14px;
+}
+
+.profile__respons_type_success {
+  color: #29bb59f8;
+}
+
 @media screen and (max-width: 768px) {
   .profile {
     padding: 236px 0 259px;
@@ -89,8 +137,7 @@
     margin: 0 0 96px 0;
   }
 
-  .profile__button {
-    margin-top: 210px;
+  .profile__respons {
     margin-top: calc((210 - 16)/1024*100vh);
   }
 }
@@ -109,10 +156,13 @@
     margin: 0 0 80px 0;
   }
 
+  .profile__respons {
+    margin-top: calc((379 - 16)/780*100vh);
+  }
+
   .profile__button {
     font-size: 12px;
     line-height: 15px;
-    margin-top: calc((379 - 16)/780*100vh);
   }
 
   .profile__link {
