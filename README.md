@@ -22,4 +22,4 @@
 <hr>
 
 ### Ссылки на готовый проект
-*[Ссылка на клиентскую часть](https://my-movies.nomoredomains.club)*
+[Ссылка на клиентскую часть](https://my-movies.nomoredomains.club)
